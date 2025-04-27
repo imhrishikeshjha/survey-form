@@ -9,7 +9,7 @@ const fieldList = [
 ];
 
 // Google Apps Script URL - Replace with your actual deployed Google Apps Script URL
-const scriptURL = 'https://script.google.com/macros/s/AKfycbz7xas2gjKJX5TvWkCeCTnnn4GWbu2ld911eX1jj6JzM92BiGq5bPjHmA_yypCqVzlrEw/exec;
+const scriptURL = 'https://script.google.com/macros/s/AKfycbz7xas2gjKJX5TvWkCeCTnnn4GWbu2ld911eX1jj6JzM92BiGq5bPjHmA_yypCqVzlrEw/exec;'
 
 // Initialize table on page load
 document.addEventListener('DOMContentLoaded', function() {
