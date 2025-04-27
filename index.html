@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nursing School Requirements Collection Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts: Roboto -->
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/roboto@3.3.1/400.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f3f4f6;
+      color: #172554;
+    }
+    /* Remove number input up/down arrows and date inner icon for easier PDF style */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    @media print {
+      html, body, .min-h-screen {
+        background: #fff !important;
+      }
+      .hidden-in-print { display:none !important }
+      select, input, textarea {
+        color: #111 !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 flex justify-center py-8">
+  <div class="w-full max-w-4xl bg-white shadow-md rounded-lg p-8">
+    <h1 class="text-3xl font-bold text-blue-900 mb-2 flex items-center">
+      <span class="mr-2"><i class="fa-solid fa-clipboard-list"></i></span>
+      Nursing School Requirements Collection Form
+    </h1>
+    <p class="mb-6 text-blue-700 text-base">Complete all sections below. Required fields are marked with <span class="text-red-500">*</span>. You may export submissions to Excel below.</p>
+    <form id="requirementForm" class="space-y-4" autocomplete="off">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold" for="institutionName">Institution Name <span class="text-red-500">*</span></label>
+          <input id="institutionName" name="Institution Name" type="text" required class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="institutionId">Institution ID</label>
+          <input id="institutionId" name="Institution ID" type="text" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="programName">Program Name <span class="text-red-500">*</span></label>
+          <input id="programName" name="Program Name" type="text" required class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="requirementDate">Date of Requirement Gathering</label>
+          <input id="requirementDate" name="Date of Requirement Gathering" type="date" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="rotationStartDate">Rotation Start Date</label>
+          <input id="rotationStartDate" name="Rotation Start Date" type="date" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="evaluationETA">Evaluation ETA</label>
+          <input id="evaluationETA" name="Evaluation ETA" type="date" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="contactPerson">Contact Person (For Requirement Related Questions):</label>
+          <input id="contactPerson" name="Contact Person" type="text" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="programType">Program Type <span class="text-red-500">*</span></label>
+          <select id="programType" name="Program Type" required class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300">
+            <option value="" disabled selected>Select Type</option>
+            <option value="Undergraduate">Undergraduate</option>
+            <option value="Graduate">Graduate</option>
+            <option value="DNP">DNP</option>
+            <option value="CRNA">CRNA</option>
+            <option value="MidWifery">MidWifery</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold" for="formTitle">Form Title <span class="text-red-500">*</span></label>
+          <input id="formTitle" name="Form Title" type="text" required class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="attachName">Actual Attachment Name</label>
+          <input id="attachName" name="Actual Attachment Name" type="text" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block font-semibold" for="formPurpose">Purpose Of The Form <span class="text-red-500">*</span></label>
+          <textarea id="formPurpose" name="Purpose Of The Form" rows="2" required class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300"></textarea>
+        </div>
+        <div>
+          <label class="block font-semibold">Anonymous/Non Anonymous</label>
+          <select id="anonType" name="Anonymous/Non Anonymous" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300">
+            <option value="" disabled selected>Select Option</option>
+            <option value="Anonymous">Anonymous</option>
+            <option value="Non-Anonymous">Non-Anonymous</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold" for="workflow">Workflow</label>
+          <select id="workflow" name="Workflow" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300">
+            <option value="" selected>Select Workflow</option>
+            <option value="Student (Save+Submit) >> Admin (Review)">Student (Save+Submit) → Admin (Review)</option>
+            <option value="Student (Save+Submit) >> Clinical Instructor(Review)>>Admin (Review)">Student (Save+Submit) → Clinical Instructor (Review) → Admin (Review)</option>
+            <option value="Preceptor fills and submits, Program Admin reviews">Preceptor (Submit) → Program Admin (Review)</option>
+            <option value="Faculty Evaluation">Faculty Evaluation</option>
+            <option value="Other">Other</option>
+          </select>
+          <input id="workflowOther" name="If Other, Please Mention (Workflow)" type="text" placeholder="If Other, Please Mention" class="mt-2 w-full border-gray-300 rounded px-3 py-2" style="display:none" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="involvedUsers">Involved Users</label>
+          <input id="involvedUsers" name="Involved Users" type="text" placeholder="e.g. Student, Admin, Clinical Instructor" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="formFrequency">Frequency Of Form Completion</label>
+          <select id="formFrequency" name="Frequency Of Form Completion" class="mt-1 w-full border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300">
+            <option value="" selected>Select Frequency</option>
+            <option value="Once Per Semester">Once Per Semester</option>
+            <option value="Twice Per Semester">Twice Per Semester</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Unlimited">Unlimited</option>
+            <option value="Other">Other</option>
+          </select>
+          <input id="frequencyOther" name="If Other, Please Mention (Frequency)" type="text" placeholder="If Other, Please Mention" class="mt-2 w-full border-gray-300 rounded px-3 py-2" style="display:none" />
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <h2 class="text-lg font-bold text-blue-800 mt-3">Scoring Options</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold" for="scoring">Scoring</label>
+          <select id="scoring" name="Scoring" class="mt-1 w-full border-gray-300 rounded px-3 py-2">
+            <option value="" selected>Select</option>
+            <option value="NonScoring">NonScoring</option>
+            <option value="Scoring">Scoring</option>
+            <option value="Scoring/NonScoring">Scoring/NonScoring (Customizable)</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold" for="scoringType">Type of Scoring</label>
+          <select id="scoringType" name="Type of Scoring" class="mt-1 w-full border-gray-300 rounded px-3 py-2">
+            <option value="" selected>Select</option>
+            <option value="Raw">Raw</option>
+            <option value="Aggregate">Aggregate</option>
+            <option value="Competency">Competency</option>
+            <option value="Percentage">Percentage</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold" for="sectionScoring">Section Scoring</label>
+          <select id="sectionScoring" name="Section Scoring" class="mt-1 w-full border-gray-300 rounded px-3 py-2">
+            <option value="" selected>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="NA">N/A</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold" for="scoringView">Scoring View (Who can view the form's score?)</label>
+          <input id="scoringView" name="Scoring View" type="text" placeholder="e.g. Student, Admin, Faculty" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <h2 class="text-lg font-bold text-blue-800 mt-3">Notifications & Recipients</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold" for="notificationTypes">Type of Notification</label>
+          <select multiple id="notificationTypes" name="Type of Notification" class="mt-1 w-full border-gray-300 rounded px-3 py-2 min-h-20" size="4">
+            <option value="Response-based">Response Based Notification</option>
+            <option value="Action-based">Action Based Notification</option>
+            <option value="Low Score">Low Score Notification</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold" for="notificationRecipients">Who Will Receive Notification</label>
+          <input id="notificationRecipients" name="Who Will Receive Notification" type="text" placeholder="e.g. Student, Admin, Faculty" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="emailIds">Additional Email ID(s) for Notification</label>
+          <input id="emailIds" name="Please mention other Email Id's" type="text" placeholder="email1@site.com, email2@site.com" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+      </div>
+      <div>
+        <label class="block font-semibold" for="notifComments">Additional Comments (For response/action-based notifications):</label>
+        <textarea id="notifComments" name="Additional Comments for Notification" rows="2" class="mt-1 w-full border-gray-300 rounded px-3 py-2"></textarea>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold" for="reportTypes">Type of Reports</label>
+          <input id="reportTypes" name="Type of Reports" type="text" placeholder="e.g. Summary, Detailed, By Section" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block font-semibold" for="standoutFeatures">Standout Features</label>
+          <input id="standoutFeatures" name="Standout Features" type="text" placeholder="e.g. Linking, Bulk Actions" class="mt-1 w-full border-gray-300 rounded px-3 py-2" />
+        </div>
+      </div>
+      <div>
+        <label class="block font-semibold" for="notes">Notes or Additional Info</label>
+        <textarea id="notes" name="Notes" rows="2" class="mt-1 w-full border-gray-300 rounded px-3 py-2"></textarea>
+      </div>
+
+      <div class="flex flex-wrap mt-6 gap-4">
+        <button type="submit" class="bg-blue-700 text-white px-6 py-2 font-bold rounded hover:bg-blue-900 flex items-center">
+          <span class="mr-2"><i class="fa-solid fa-save"></i></span> Save Entry
+        </button>
+        <button type="button" id="exportExcelBtn" class="bg-green-600 text-white px-5 py-2 font-semibold rounded hover:bg-green-800 flex items-center" title="Export all submissions to Excel">
+          <span class="mr-2"><i class="fa-solid fa-file-excel"></i></span> Export to Excel
+        </button>
+        <button type="button" id="clearBtn" class="bg-gray-200 text-blue-800 px-5 py-2 font-semibold rounded hover:bg-gray-300 flex items-center" title="Clear all fields">
+          <span class="mr-2"><i class="fa-solid fa-broom"></i></span> Clear Form
+        </button>
+      </div>
+      <p id="formMessage" class="mt-2 text-sm text-green-700 font-medium hidden"></p>
+    </form>
+
+    <div class="my-6">
+      <h2 class="text-blue-900 text-lg font-semibold mb-2 flex items-center"><i class="fa-solid fa-table mr-2"></i>Saved Requirement Submissions</h2>
+      <div class="overflow-x-auto max-w-full">
+        <table id="submissionsTable" class="min-w-full border divide-y divide-gray-200 bg-white">
+          <thead class="bg-blue-100">
+            <tr id="tableHeadRow"></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-600 mt-2">Your entries are stored in your browser locally and can be exported at any time.</p>
+    </div>
+  </div>
+  
+  <!-- SheetJS CDN for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
+  <!-- Your external JavaScript file -->
+  <script src="formsubmit.js"></script>
+</body>
+</html>
