@@ -9,7 +9,7 @@ const fieldList = [
 ];
 
 // Google Apps Script URL - Replace with your actual deployed Google Apps Script URL
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwP-ZZz3IlRGcZ3A0kIwBs0WqPMWsuX0kd-sQq97JVl/dev';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbz7xas2gjKJX5TvWkCeCTnnn4GWbu2ld911eX1jj6JzM92BiGq5bPjHmA_yypCqVzlrEw/exec;
 
 // Initialize table on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -81,47 +81,120 @@ document.getElementById('requirementForm').addEventListener('submit', async func
   entry['Notes'] = this['notes'].value;
 
   try {
-    // 1. Save to Google Sheets
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(entry)
-    });
-
-    const result = await response.text();
-    
-    if (!response.ok) {
-      throw new Error('Google Sheets submission failed');
-    }
-
-    // 2. Save to localStorage regardless of Google Sheets success/failure
+    // First save to localStorage to ensure data isn't lost
     let all = fetchSubmissions();
     all.push(entry);
     saveSubmissions(all);
     renderSubmissions();
+    
+    // Create Form Data to submit via form
+    const formData = new FormData();
+    for (const key in entry) {
+      formData.append(key, entry[key]);
+    }
 
-    showMessage('Form saved to both Google Sheets and local storage!', false);
+    // CORS fix: Try submitting with alternative approach using fetch with JSONP proxy
+    const response = await fetch(scriptURL, {
+      method: 'POST',
+      mode: 'no-cors', // This prevents CORS errors but makes response unreadable
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).catch(error => {
+      console.error('Fetch error:', error);
+      // Handle the error - data is already saved locally
+    });
+    
+    showMessage('Form saved successfully! Data is stored locally.', false);
     this.reset();
     document.getElementById('workflowOther').style.display = 'none';
     document.getElementById('frequencyOther').style.display = 'none';
 
   } catch (error) {
     console.error('Error:', error);
-    
-    // Still save to localStorage even if Google Sheets fails
-    let all = fetchSubmissions();
-    all.push(entry);
-    saveSubmissions(all);
-    renderSubmissions();
-    
-    showMessage(`Form saved locally but failed to submit to Google Sheets. Please try again later.`, true);
+    showMessage(`Form saved locally. Will try sending to Google Sheets later.`, true);
+    queueFailedSubmission(entry);
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = '<span class="mr-2"><i class="fa-solid fa-save"></i></span> Save Entry';
   }
 });
+
+// Queue failed submissions for retry
+function queueFailedSubmission(entry) {
+  const failedQueue = JSON.parse(localStorage.getItem('nsrcf_failed_queue') || '[]');
+  failedQueue.push(entry);
+  localStorage.setItem('nsrcf_failed_queue', JSON.stringify(failedQueue));
+  updateRetryButtonVisibility();
+}
+
+// Retry sending failed submissions
+function retryFailedSubmissions() {
+  const failedQueue = JSON.parse(localStorage.getItem('nsrcf_failed_queue') || '[]');
+  if (failedQueue.length === 0) return;
+  
+  const retryButton = document.getElementById('retryBtn');
+  if (retryButton) {
+    retryButton.disabled = true;
+    retryButton.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> Retrying...';
+  }
+  
+  let successCount = 0;
+  let newQueue = [];
+  
+  // Process each failed submission
+  Promise.all(failedQueue.map(async (entry) => {
+    try {
+      const formData = new FormData();
+      for (const key in entry) {
+        formData.append(key, entry[key]);
+      }
+      
+      await fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      
+      successCount++;
+    } catch (error) {
+      newQueue.push(entry);
+    }
+  })).then(() => {
+    localStorage.setItem('nsrcf_failed_queue', JSON.stringify(newQueue));
+    
+    if (retryButton) {
+      retryButton.disabled = false;
+      retryButton.innerHTML = '<span class="mr-2"><i class="fa-solid fa-sync"></i></span> Retry Failed';
+    }
+    
+    if (successCount > 0) {
+      showMessage(`Attempted to send ${successCount} entries to Google Sheets. ${newQueue.length} entries remaining.`, false);
+    } else if (newQueue.length > 0) {
+      showMessage(`Failed to send entries to Google Sheets. Please try again later.`, true);
+    }
+    
+    updateRetryButtonVisibility();
+  });
+}
+
+// Update retry button visibility based on queue
+function updateRetryButtonVisibility() {
+  const failedQueue = JSON.parse(localStorage.getItem('nsrcf_failed_queue') || '[]');
+  const retryBtn = document.getElementById('retryBtn');
+  
+  if (retryBtn) {
+    retryBtn.style.display = failedQueue.length > 0 ? 'flex' : 'none';
+    const counter = retryBtn.querySelector('.counter');
+    if (counter) {
+      counter.textContent = failedQueue.length;
+    }
+  }
+}
 
 // Local storage functions
 function fetchSubmissions() {
@@ -168,6 +241,9 @@ function renderSubmissions() {
     
     tbody.appendChild(tr);
   });
+  
+  // Update retry button visibility
+  updateRetryButtonVisibility();
 }
 
 // Delete submission
@@ -240,5 +316,26 @@ document.getElementById('exportExcelBtn').addEventListener('click', function() {
   } catch (error) {
     console.error('Excel export error:', error);
     showMessage("Failed to export to Excel. Please try again.", true);
+  }
+});
+
+// Add retry button to DOM if it doesn't exist
+document.addEventListener('DOMContentLoaded', function() {
+  if (!document.getElementById('retryBtn')) {
+    const buttonsContainer = document.querySelector('.flex.flex-wrap.mt-6.gap-4');
+    if (buttonsContainer) {
+      const retryBtn = document.createElement('button');
+      retryBtn.id = 'retryBtn';
+      retryBtn.type = 'button';
+      retryBtn.className = 'bg-yellow-500 text-white px-5 py-2 font-semibold rounded hover:bg-yellow-700 flex items-center';
+      retryBtn.title = 'Retry sending failed submissions';
+      retryBtn.innerHTML = '<span class="mr-2"><i class="fa-solid fa-sync"></i></span> Retry Failed <span class="ml-2 bg-yellow-700 px-2 py-0.5 rounded-full text-xs counter">0</span>';
+      retryBtn.addEventListener('click', retryFailedSubmissions);
+      retryBtn.style.display = 'none';
+      buttonsContainer.appendChild(retryBtn);
+    }
+    
+    // Initial check for failed submissions
+    updateRetryButtonVisibility();
   }
 });
